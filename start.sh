@@ -63,7 +63,19 @@ echo ""
 
 # 在后台启动项目
 echo "🚀 正在启动 Spring AI 服务..."
-./mvnw clean spring-boot:run > "$LOG_FILE" 2>&1 &
+
+# 检查是否有 mvnw，如果没有则使用系统的 mvn
+if [ -f "./mvnw" ]; then
+    MVN_CMD="./mvnw"
+elif [ -f "./mvnw.cmd" ]; then
+    MVN_CMD="./mvnw.cmd"
+else
+    # 使用系统的 mvn
+    MVN_CMD="mvn"
+    echo "ℹ️  使用系统 Maven: $MVN_CMD"
+fi
+
+$MVN_CMD clean spring-boot:run > "$LOG_FILE" 2>&1 &
 MAVEN_PID=$!
 
 # 等待服务启动
